@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.samilaltin.adidas.assessment.ui.productdetail.ProductDetailViewModel" />
+
+        <variable
+            name="adapter"
+            type="com.samilaltin.adidas.assessment.ui.adapter.ProductReviewListAdapter" />
+
+        <variable
+            name="product"
+            type="com.samilaltin.adidas.assessment.network.data.ProductResponse" />
+
+        <variable
+            name="fragmentManager"
+            type="androidx.fragment.app.FragmentManager" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/surface">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/stickyLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/margin16"
+                    android:paddingTop="@dimen/margin16"
+                    android:paddingEnd="@dimen/margin8"
+                    android:translationZ="100dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:onBackPressed="@{true}"
+                    app:srcCompat="@drawable/ic_arrow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/app_name"
+                    style="@style/ProductNameTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin16"
+                    android:text="@string/products"
+                    android:translationZ="100dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/arrow"
+                    app:layout_constraintStart_toEndOf="@id/arrow"
+                    app:layout_constraintTop_toTopOf="@id/arrow" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin16"
+                    android:gravity="end"
+                    android:lines="1"
+                    android:text="@{product.name.trim()}"
+                    android:textStyle="bold"
+                    android:translationZ="100dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/app_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="#001" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/product_image"
+                    setImageCenterCrop="@{product.imgUrl}"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:src="@drawable/ic_noimage"
+                    app:layout_constraintBottom_toTopOf="@+id/guideline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="250dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/product_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin8"
+                    android:layout_marginEnd="@dimen/margin8"
+                    android:background="@color/white"
+                    android:clipToPadding="false"
+                    app:cardCornerRadius="@dimen/margin4"
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/guideline">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:orientation="vertical"
+                        android:padding="@dimen/margin8">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/ProductNameTextStyle"
+                            visibleIf="@{product.nameWithId != null}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin4"
+                            android:text="@{product.nameWithId}"
+                            tools:text="product - HI333" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/ProductPriceTextStyle"
+                            visibleIf="@{product.priceWithCurrency != null}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin4"
+                            android:text="@{product.priceWithCurrency}"
+                            tools:text="€20" />
+
+                        <LinearLayout
+                            visibleIf="@{product.reviews != null}"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <RatingBar
+                                style="?android:attr/ratingBarStyleIndicator"
+                                setRating="@{product.averageRating}"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="@dimen/margin8"
+                                android:numStars="5"
+                                android:stepSize="0.1"
+                                android:theme="@style/RatingBar"
+                                tools:rating="4" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/ProductPriceTextStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@{@string/rating(product.reviews.size())}"
+                                tools:text="(23)" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/reviews_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:fadeScrollbars="false"
+                    android:padding="@dimen/margin8"
+                    app:adapterProductReviewList="@{product.reviews}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/product_detail"
+                    app:reviewListAdapter="@{adapter}"
+                    app:toast="@{viewModel.toastLiveData}"
+                    tools:listitem="@layout/item_review" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/stickyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/add_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin8"
+                android:text="@string/add_review"
+                android:theme="@style/AdidasButtonStyle"
+                app:fragmentManager="@{fragmentManager}"
+                app:reviewClickListener="@{viewModel.clickListener}" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/adidas_progress_bar_bg"
+            app:gone="@{!viewModel.isLoading()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

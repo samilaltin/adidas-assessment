@@ -1,0 +1,136 @@
+apply plugin: Plugins.androidApplication
+apply plugin: Plugins.kotlinAndroid
+apply plugin: Plugins.kotlinKapt
+apply plugin: Plugins.kotlinAndroidExtensions
+apply plugin: Plugins.hiltAndroidPlugin
+
+android {
+    compileSdkVersion Configs.compileSdkVersion
+    buildToolsVersion Configs.buildToolsVersion
+
+    defaultConfig {
+        applicationId Configs.applicationId
+        minSdkVersion Configs.minSdkVersion
+        targetSdkVersion Configs.targetSdkVersion
+        versionCode Configs.versionCode
+        versionName Configs.versionName
+
+        testInstrumentationRunner Configs.testInstrumentationRunner
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+
+        // Enable Coroutines and Flow APIs
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+    }
+    buildFeatures {
+        dataBinding = true
+    }
+    androidExtensions {
+        experimental = true
+    }
+    lintOptions {
+        abortOnError false
+    }
+    sourceSets {
+        androidTest.java.srcDirs += "src/test-common/java"
+        test.java.srcDirs += "src/test-common/java"
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+    }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlin.time.ExperimentalTime"]
+        kotlinOptions.freeCompilerArgs += ["-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"]
+    }
+}
+
+dependencies {
+    /Android Supports/
+    implementation Dependencies.material
+    implementation Dependencies.constraintLayout
+
+    /Architecture components/
+    implementation Dependencies.fragment
+    implementation Dependencies.lifecycleExtensions
+    implementation Dependencies.lifecycleLiveData
+    implementation Dependencies.lifecycleViewModel
+    implementation Dependencies.lifecycleSavedState
+    implementation Dependencies.archComponent
+
+    /Startup/
+    implementation Dependencies.startup
+
+    /Hilt/
+    implementation Dependencies.hiltAndroid
+    implementation Dependencies.hiltCommon
+    implementation Dependencies.hiltLifecycleViewModel
+    compileOnly Dependencies.assistedInjectAnnotations
+    kapt Dependencies.assistedInjectProcessor
+    kapt Dependencies.daggerHiltCompiler
+    kapt Dependencies.hiltCompiler
+    androidTestImplementation Dependencies.hiltAndroidTesting
+    kaptAndroidTest Dependencies.daggerHiltCompiler
+
+    /Network/
+    implementation Dependencies.sandwich
+    implementation Dependencies.retrofit
+    implementation Dependencies.converterMoshi
+    implementation Dependencies.loggingInterceptor
+    testImplementation Dependencies.mockWebServer
+
+    /Moshi/
+    implementation Dependencies.moshiKotlin
+    kapt Dependencies.moshiKotlinCodegen
+
+    /Coroutines/
+    implementation Dependencies.kotlinxCoroutinesAndroid
+    testImplementation Dependencies.kotlinxCoroutinesAndroid
+    testImplementation Dependencies.kotlinxCoroutinesTest
+
+    /Glide/
+    implementation Dependencies.glide
+    kapt Dependencies.glideCompiler
+
+    /Debuging/
+    implementation Dependencies.timber
+
+    /Unit Test/
+    testImplementation Dependencies.junit
+    testImplementation Dependencies.core
+    testImplementation Dependencies.mockitoKotlin
+    testImplementation Dependencies.mockitoInline
+    testImplementation Dependencies.turbine
+    testImplementation Dependencies.robolectric
+    androidTestImplementation Dependencies.truth
+    androidTestImplementation Dependencies.androidxTestJunit
+    androidTestImplementation Dependencies.runner
+    androidTestImplementation Dependencies.espresso
+
+}

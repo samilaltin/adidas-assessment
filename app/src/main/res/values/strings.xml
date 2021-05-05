@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Adidas Assessment</string>
+    <string name="product_image">Product Image</string>
+    <string name="products">Products</string>
+    <string name="rating">(%d)</string>
+    <string name="add_review">Add Review</string>
+    <string name="send_review">Send Review</string>
+    <string name="type_review">Type your review here</string>
+    <string name="fields_required">The fields above are required</string>
+</resources>
